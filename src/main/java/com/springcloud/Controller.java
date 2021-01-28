@@ -20,40 +20,37 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 //@RequiredArgsConstructor
 public class Controller {
-	private final RestTemplate webhookRestTemplate;
-	
-	public Controller(RestTemplate restTemplate) {
-		this.webhookRestTemplate = restTemplate;
-	}
-	
+	@Autowired
+	private RestTemplate webhookRestTemplate;
+
 	@Autowired
 	private LoadBalancerClient lbClient;
 
-    @GetMapping("/greeting/{message}")
-    @ApiOperation(value="Test Ribbon")
-    public String greeting(@PathVariable String message) {
-    	String baseUrl = "";
+	@GetMapping("/greeting/{message}")
+	@ApiOperation(value = "Test Ribbon")
+	public String greeting(@PathVariable String message) {
+		String baseUrl = "";
 		try {
 			final ServiceInstance instance = lbClient.choose("webhook");
-			baseUrl = String.format("http://%s:%s/%s", instance.getHost(), instance.getPort(), "greeting/"+message);
-			System.out.println("Url: "+ baseUrl);
-		} catch(Exception e) {
+			baseUrl = String.format("http://%s:%s/%s", instance.getHost(), instance.getPort(), "greeting/" + message);
+			System.out.println("Url: " + baseUrl);
+		} catch (Exception e) {
 			System.out.println("*** NO webhook service!!!");
 			return "NO DATA";
-		}		    	
-    	ResponseEntity<String> response = null;
-		
+		}
+		ResponseEntity<String> response = null;
+
 		try {
-			response = webhookRestTemplate.exchange(baseUrl,  HttpMethod.GET, getHeaders(), String.class);
-		} catch(Exception e) {
+			response = webhookRestTemplate.exchange(baseUrl, HttpMethod.GET, getHeaders(), String.class);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		return "["+baseUrl+"] " + response.getBody();
-    	
-    } 
-    
-    private static HttpEntity<?> getHeaders() throws IOException {
+
+		return "[" + baseUrl + "] " + response.getBody();
+
+	}
+
+	private static HttpEntity<?> getHeaders() throws IOException {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
 		return new HttpEntity<>(headers);
