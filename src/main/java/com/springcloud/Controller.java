@@ -35,7 +35,7 @@ public class Controller {
     	String baseUrl = "";
 		try {
 			final ServiceInstance instance = lbClient.choose("webhook");
-			baseUrl = String.format("http://%s:%s/%s", instance.getHost(), instance.getPort(), "/greeting/"+message);
+			baseUrl = String.format("http://%s:%s/%s", instance.getHost(), instance.getPort(), "greeting/"+message);
 			System.out.println("Url: "+ baseUrl);
 		} catch(Exception e) {
 			System.out.println("*** NO webhook service!!!");
