@@ -11,10 +11,13 @@ import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 @EnableDiscoveryClient
+/*
 @RibbonClients({
 	@RibbonClient(name = "webhook", configuration = WebhookRibbonConfiguration.class)
 	//@RibbonClient(name = "webhook")
 })
+*/
+@RibbonClients
 public class ConsumerApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ConsumerApplication.class, args);
