@@ -1,0 +1,13 @@
+server:
+  port: ${service_port:8002}
+spring:
+  application:
+    name: consumer
+  profiles:
+    active: ${profile:local}
+    include: common 
+  cloud: 
+    config:
+      uri: ${config_servers:http://localhost:9001}
+      searchPaths: ${spring.application.name}
+      default-label: main
