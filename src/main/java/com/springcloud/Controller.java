@@ -1,10 +1,13 @@
 package com.springcloud;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -14,6 +17,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 
 import io.swagger.annotations.ApiOperation;
 
@@ -49,10 +54,40 @@ public class Controller {
 		return "[" + baseUrl + "] " + response.getBody();
 
 	}
-
+	
 	private static HttpEntity<?> getHeaders() throws IOException {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
 		return new HttpEntity<>(headers);
+	}
+	
+	@GetMapping("/hystrix/{param}")
+	@ApiOperation(value = "test hystrix")
+	@HystrixCommand(fallbackMethod = "testHystrixFallback")
+	public List<String> testHystrix(@PathVariable String param) {
+		String baseUrl = "";
+		try {
+			final ServiceInstance instance = lbClient.choose("hystrix-consumer");
+			baseUrl = String.format("http://%s:%s/%s", instance.getHost(), instance.getPort(), "delay/" + param);
+			System.out.println("Url: " + baseUrl);
+		} catch (Exception e) {
+			System.out.println("*** NO hystrix consumer service!!!");
+			return Collections.emptyList();
+		}
+		ResponseEntity<List <String>> response = null;
+
+		try {
+			response = webhookRestTemplate
+					.exchange(baseUrl, HttpMethod.GET, null, new ParameterizedTypeReference<List <String>>() {});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return response.getBody();
+	}
+	
+	public List<String> testHystrixFallback(String param, Throwable t) {
+		System.err.println("###### ERROR =>"+t.toString());
+		return Collections.emptyList();
 	}
 }
