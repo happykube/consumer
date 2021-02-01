@@ -47,6 +47,6 @@ public class RestTemplateConfig {
 
 	@Bean
 	public RestTemplate webhookRestTemplate() {
-		return getRestTemplate(20, 10);
+		return getRestTemplate(20, 50);
 	}
 }
