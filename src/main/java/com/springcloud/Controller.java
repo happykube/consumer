@@ -1,6 +1,7 @@
 package com.springcloud;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -89,5 +90,16 @@ public class Controller {
 	public List<String> testHystrixFallback(String param, Throwable t) {
 		System.err.println("###### ERROR =>"+t.toString());
 		return Collections.emptyList();
+	}
+	
+	@GetMapping("/delay/{param}")
+	@ApiOperation(value = "test hystrix2")
+	public String testHystrix2(@PathVariable String param) {
+		if(!"pass".equals(param)) {
+			try {
+				Thread.sleep(1000);
+			} catch(Exception e) {}
+		}
+		return "I'm Working";
 	}
 }
