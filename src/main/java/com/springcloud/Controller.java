@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.ServiceInstance;
@@ -28,6 +29,8 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @RefreshScope
 public class Controller {
+	private final Logger log = Logger.getLogger(getClass());
+	
 	@Autowired
 	private RestTemplate webhookRestTemplate;
 
@@ -40,6 +43,8 @@ public class Controller {
 	@GetMapping("/greeting/{message}")
 	@ApiOperation(value = "Test Ribbon")
 	public String greeting(@PathVariable String message) {
+		log.info("### Received: /greeting/"+message);
+		
 		String baseUrl = "";
 		try {
 			final ServiceInstance instance = lbClient.choose("webhook");
@@ -57,6 +62,7 @@ public class Controller {
 			e.printStackTrace();
 		}
 
+		log.info("### Sent: "+"[" + baseUrl + "] " + response.getBody());
 		return "[" + baseUrl + "] " + response.getBody();
 
 	}
@@ -71,6 +77,8 @@ public class Controller {
 	@ApiOperation(value = "test hystrix")
 	@HystrixCommand(fallbackMethod = "testHystrixFallback")
 	public List<String> testHystrix(@PathVariable String param) {
+		log.info("### Received: /hystrix/"+param);
+		
 		String baseUrl = "";
 		try {
 			final ServiceInstance instance = lbClient.choose("hystrix-consumer");
@@ -89,6 +97,7 @@ public class Controller {
 			e.printStackTrace();
 		}
 
+		log.info("### Sent: "+response.getBody());
 		return response.getBody();
 	}
 	
@@ -101,11 +110,15 @@ public class Controller {
 	@ApiOperation(value = "test hystrix2")
 	
 	public String testHystrix2(@PathVariable String param) {
+		log.info("### Received: /delay/"+param);
 		if(!"pass".equals(param)) {
 			try {
 				Thread.sleep(sleepTime);
 			} catch(Exception e) {}
 		}
-		return "I'm Working";
+		
+		String msg = "I'm Working !";
+		log.info("### Sent: "+msg);
+		return msg;
 	}
 }
