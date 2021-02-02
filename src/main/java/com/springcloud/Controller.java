@@ -6,8 +6,10 @@ import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -24,7 +26,7 @@ import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-//@RequiredArgsConstructor
+@RefreshScope
 public class Controller {
 	@Autowired
 	private RestTemplate webhookRestTemplate;
@@ -32,6 +34,9 @@ public class Controller {
 	@Autowired
 	private LoadBalancerClient lbClient;
 
+	@Value("${sleeptime:1000}")
+	private long sleepTime;
+	
 	@GetMapping("/greeting/{message}")
 	@ApiOperation(value = "Test Ribbon")
 	public String greeting(@PathVariable String message) {
@@ -94,11 +99,11 @@ public class Controller {
 	
 	@GetMapping("/delay/{param}")
 	@ApiOperation(value = "test hystrix2")
-	//@HystrixCommand
+	
 	public String testHystrix2(@PathVariable String param) {
 		if(!"pass".equals(param)) {
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(sleepTime);
 			} catch(Exception e) {}
 		}
 		return "I'm Working";
