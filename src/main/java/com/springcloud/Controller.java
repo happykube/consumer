@@ -94,7 +94,7 @@ public class Controller {
 	
 	@GetMapping("/delay/{param}")
 	@ApiOperation(value = "test hystrix2")
-	@HystrixCommand
+	//@HystrixCommand
 	public String testHystrix2(@PathVariable String param) {
 		if(!"pass".equals(param)) {
 			try {
