@@ -45,6 +45,11 @@ public class Controller {
 	public String greeting(@PathVariable String message) {
 		log.info("### Received: /greeting/"+message);
 		
+		@RequestHeader Map<String, String> headers;
+		headers.forEach(key, value) {
+			log.info(String.format("Header '%s' = %s", key, value));
+		}
+
 		String baseUrl = "";
 		try {
 			final ServiceInstance instance = lbClient.choose("webhook");
