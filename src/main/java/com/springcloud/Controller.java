@@ -43,8 +43,9 @@ public class Controller {
 
 	@GetMapping("/greeting/{message}")
 	@ApiOperation(value = "Test Ribbon")
-	public String greeting(@PathVariable String message) {
+	public String greeting(@PathVariable String message, @RequestHeader("x-req-msg") String msg) {
 		log.info("### Received: /greeting/" + message);
+		log.info("### Header['x-req-msg']=>" + msg);
 
 		String baseUrl = "";
 		try {
