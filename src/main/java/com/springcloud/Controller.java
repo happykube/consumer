@@ -44,8 +44,14 @@ public class Controller {
 	@ApiOperation(value = "Test Ribbon")
 	public String greeting(@PathVariable String message, @RequestHeader HttpHeaders headers) {
 		log.info("### Received: /greeting/" + message);
-		log.info("### Header['x-req-msg']=>" + headers.get("x-req-msg"));
-		log.info("### Header['cache-control']=>" + headers.get("cache-control"));
+
+		/*
+		 * log.info("### Header['x-req-msg']=>" + headers.get("x-req-msg"));
+		 * log.info("### Header['cache-control']=>" + headers.get("cache-control"));
+		 */
+		headers.forEach((key, value) -> {
+			log.info(String.format("***** Header '%s' => %s", key, value));
+		});
 
 		String baseUrl = "";
 		try {
