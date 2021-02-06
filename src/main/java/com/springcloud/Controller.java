@@ -1,7 +1,6 @@
 package com.springcloud;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -46,6 +45,7 @@ public class Controller {
 	public String greeting(@PathVariable String message, @RequestHeader HttpHeaders headers) {
 		log.info("### Received: /greeting/" + message);
 		log.info("### Header['x-req-msg']=>" + headers.get("x-req-msg"));
+		log.info("### Header['cache-control']=>" + headers.get("cache-control"));
 
 		String baseUrl = "";
 		try {
@@ -124,5 +124,14 @@ public class Controller {
 		String msg = "I'm Working !";
 		log.info("### Sent: " + msg);
 		return msg;
+	}
+
+	@GetMapping("/headers")
+	public String listHeaders(@RequestHeader HttpHeaders headers) {
+		headers.forEach((key, value) -> {
+			log.info(String.format("'%s' => %s", key, value));
+			// System.out.println(String.format("### Headers '%s' => %s", key, value));
+		});
+		return "";
 	}
 }

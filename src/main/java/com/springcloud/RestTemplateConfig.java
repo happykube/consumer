@@ -2,7 +2,6 @@ package com.springcloud;
 
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -28,21 +27,22 @@ public class RestTemplateConfig {
 			}
 		};
 
-	/*
-	 * 위 수행을 좀 더 쉽게 코딩하면 아래와 같습니다.  
-	 * 	PoolingHttpClientConnectionManager connManager = new PoolingHttpClientConnectionManager();
-		connManager.setDefaultMaxPerRoute(defaultMaxPerRoute);
-		connManager.setMaxTotal(maxTotal);
-
-		HttpClient client = HttpClientBuilder.create().setConnectionManager(connManager).build();
-
-		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory(client);
-		factory.setConnectTimeout(2000);
-		factory.setReadTimeout(5000);
-
-		return new RestTemplate(factory);
-
-	 */
+		/*
+		 * 위 수행을 좀 더 쉽게 코딩하면 아래와 같습니다. PoolingHttpClientConnectionManager connManager =
+		 * new PoolingHttpClientConnectionManager();
+		 * connManager.setDefaultMaxPerRoute(defaultMaxPerRoute);
+		 * connManager.setMaxTotal(maxTotal);
+		 * 
+		 * HttpClient client =
+		 * HttpClientBuilder.create().setConnectionManager(connManager).build();
+		 * 
+		 * HttpComponentsClientHttpRequestFactory factory = new
+		 * HttpComponentsClientHttpRequestFactory(client);
+		 * factory.setConnectTimeout(2000); factory.setReadTimeout(5000);
+		 * 
+		 * return new RestTemplate(factory);
+		 * 
+		 */
 	}
 
 	@Bean
