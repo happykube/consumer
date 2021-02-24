@@ -30,6 +30,7 @@ import io.swagger.annotations.ApiOperation;
 @RefreshScope
 public class Controller {
 	private final Logger log = Logger.getLogger(getClass());
+	static final String TEXTSENT = "### Sent: ";
 
 	@Autowired
 	private RestTemplate webhookRestTemplate;
@@ -70,7 +71,7 @@ public class Controller {
 			e.printStackTrace();
 		}
 
-		log.info("### Sent: " + "[" + baseUrl + "] " + response.getBody());
+		log.info(TEXTSENT + "[" + baseUrl + "] " + response.getBody());
 		return "[" + baseUrl + "] " + response.getBody();
 
 	}
@@ -106,7 +107,7 @@ public class Controller {
 			e.printStackTrace();
 		}
 
-		log.info("### Sent: " + response.getBody());
+		log.info(TEXTSENT + response.getBody());
 		return response.getBody();
 	}
 
@@ -128,7 +129,7 @@ public class Controller {
 		}
 
 		String msg = "I'm Working !";
-		log.info("### Sent: " + msg);
+		log.info(TEXTSENT + msg);
 		return msg;
 	}
 
